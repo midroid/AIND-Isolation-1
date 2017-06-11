@@ -6,6 +6,8 @@ and include the results in your report.
 import random
 import math
 
+MAX = float('inf')
+MIN = float('-inf')
 
 class SearchTimeout(Exception):
     """Subclass base exception for code clarity. """
@@ -42,10 +44,10 @@ def custom_score(game, player):
     """
 
     if game.is_loser(player):
-        return float("-inf")
+        return MIN
 
     if game.is_winner(player):
-        return float("inf")
+        return MAX
 
     # combination of two heuristics
 
@@ -137,10 +139,10 @@ def custom_score_3(game, player):
     
     # Number of moves heuristic
     if game.is_loser(player):
-        return float("-inf")
+        return MIN
 
     if game.is_winner(player):
-        return float("inf")
+        return MAX
 
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
@@ -285,14 +287,14 @@ class MinimaxPlayer(IsolationPlayer):
 
         best_move = (-1, -1)
         if maximize:
-            best_score = float("-inf")
+            best_score = MIN
             for move in moves:
                 forecast = game.forecast_move(move)
                 score, _ = self._evaluate_minimax(forecast, depth - 1, False)
                 if score > best_score:
                     best_score, best_move = score, move
         else:
-            best_score = float("inf")
+            best_score = MAX
             for move in moves:
                 forecast = game.forecast_move(move)
                 score, _ = self._evaluate_minimax(forecast, depth - 1, True)
@@ -346,7 +348,7 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         return best_move
 
-    def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf")):
+    def alphabeta(self, game, depth, alpha=MIN, beta=MAX):
         """Implement depth-limited minimax search with alpha-beta pruning as
         described in the lectures.
         This should be a modified version of ALPHA-BETA-SEARCH in the AIMA text
@@ -422,7 +424,7 @@ class AlphaBetaPlayer(IsolationPlayer):
         best_move = (-1, -1)
         if maximize:
             # maximize
-            best_score = float("-inf")
+            best_score = MIN
             for move in moves:
                 forecast = game.forecast_move(move)
                 score, _ = self._evaluate_alphabeta(forecast, depth - 1, alpha, beta, False)
@@ -434,7 +436,7 @@ class AlphaBetaPlayer(IsolationPlayer):
                 alpha = max(alpha, best_score)
         else:
             # minimize
-            best_score = float("inf")
+            best_score = MAX
             for move in moves:
                 forecast = game.forecast_move(move)
                 score, _ = self._evaluate_alphabeta(forecast, depth - 1, alpha, beta, True)
